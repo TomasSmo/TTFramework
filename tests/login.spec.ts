@@ -1,27 +1,21 @@
-import { test, expect } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
+import { LoginPage } from '../pages/loginPage.page.js';
+import { requireEnv } from '../utils/env.js';
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required env var: ${name}`);
-  return value;
-}
+const test = base.extend<{ loginPage: LoginPage }>({
+  loginPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await use(loginPage);
+  },
+});
 
-test('user can login', async ({ page }) => {
-  await page.goto('/');
-
-  await page.getByPlaceholder('Username').fill(requireEnv('SAUCE_USERNAME'));
-  await page.getByPlaceholder('Password').fill(requireEnv('SAUCE_PASSWORD'));
-  await page.getByRole('button', { name: 'Login' }).click();
-
+test('user can login', async ({ page, loginPage }) => {
+  await loginPage.login(requireEnv('SAUCE_USERNAME'), requireEnv('SAUCE_PASSWORD'));
   await expect(page).toHaveURL(/inventory/);
 });
 
-test('user cannot login with invalid password', async ({page}) => {
-  await page.goto('/');
-
-  await page.getByPlaceholder('Username').fill(requireEnv('SAUCE_USERNAME'));
-  await page.getByPlaceholder('Password').fill('wrong_password');
-  await page.getByRole('button', { name: 'Login' }).click();
-
-  await expect(page.getByText('Epic sadface: Username and password do not match')).toBeVisible();
+test('user cannot login with invalid password', async ({loginPage}) => {
+  await loginPage.login(requireEnv('SAUCE_USERNAME'),'wrong_password');
+  await expect(loginPage.errorMessage).toBeVisible();
 });
