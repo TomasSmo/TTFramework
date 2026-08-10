@@ -15,3 +15,13 @@ test('user can login', async ({ page }) => {
 
   await expect(page).toHaveURL(/inventory/);
 });
+
+test('user cannot login with invalid password', async ({page}) => {
+  await page.goto('/');
+
+  await page.getByPlaceholder('Username').fill(requireEnv('SAUCE_USERNAME'));
+  await page.getByPlaceholder('Password').fill('wrong_password');
+  await page.getByRole('button', { name: 'Login' }).click();
+
+  await expect(page.getByText('Epic sadface: Username and password do not match')).toBeVisible();
+});
