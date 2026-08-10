@@ -1,11 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage.page.js';
-
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required env var: ${name}`);
-  return value;
-}
+import { requireEnv } from '../utils/env.js';
 
 const test = base.extend<{ loginPage: LoginPage }>({
   loginPage: async ({ page }, use) => {
