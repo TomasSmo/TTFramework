@@ -20,9 +20,14 @@ export  class LoginPage {
         await this.page.goto('/');
     }
 
-    async login(username: string, password: string) {
+    async login(username: string, password: string, options: {useEnter?: boolean} = {useEnter: false}) {
         await this.usernameInput.fill(username);
         await this.passwordInput.fill(password);
-        await this.loginButton.click();
+
+        if (options.useEnter){
+            await this.passwordInput.press('Enter');
+        } else {
+            await this.loginButton.click();
+        }
     }
 }
