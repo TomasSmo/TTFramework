@@ -48,6 +48,7 @@ npx playwright test
 ```
 
 Run the tests in headed:
+
 ```bash
 npx playwright test --headed
 ```
