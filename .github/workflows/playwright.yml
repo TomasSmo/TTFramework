@@ -15,20 +15,31 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
       - name: Lint
         run: npm run lint
       - name: Check formatting
         run: npm run format:check
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
-      - uses: actions/upload-artifact@v4
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 30
+      - name: Generate Allure report
+        if: ${{ !cancelled() }}
+        run: npm run allure:generate
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: allure-report
+          path: allure-report/
           retention-days: 30
