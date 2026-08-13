@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, test } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
@@ -25,13 +25,24 @@ export class LoginPage {
     password: string,
     options: { useEnter?: boolean } = { useEnter: false },
   ) {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
+    await test.step(`Logging in as "${username}"`, async () => {
+      await test.step('Filling in the username', async () => {
+        await this.usernameInput.fill(username);
+      });
 
-    if (options.useEnter) {
-      await this.passwordInput.press('Enter');
-    } else {
-      await this.loginButton.click();
-    }
+      await test.step('Filling in the password', async () => {
+        await this.passwordInput.fill(password);
+      });
+
+      if (options.useEnter) {
+        await test.step('Pressing Enter to login', async () => {
+          await this.passwordInput.press('Enter');
+        });
+      } else {
+        await test.step('Clicking Login button', async () => {
+          await this.loginButton.click();
+        });
+      }
+    });
   }
 }
