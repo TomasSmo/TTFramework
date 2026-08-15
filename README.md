@@ -52,3 +52,15 @@ Run the tests in headed:
 ```bash
 npx playwright test --headed
 ```
+
+## Scripts
+
+| Command                   | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------- |
+| `npm run lint`            | Check code for lint errors                                        |
+| `npm run lint:fix`        | Auto-fix lint errors where possible                               |
+| `npm run format`          | Format all files with Prettier                                    |
+| `npm run format:check`    | Check formatting without making changes (used in CI)              |
+| `npm run allure:generate` | Generate a static Allure HTML report from the latest test results |
+| `npm run allure:open`     | Open the most recently generated Allure report                    |
+| `npm run allure:serve`    | Generate and open an Allure report in one step (local dev)        |
